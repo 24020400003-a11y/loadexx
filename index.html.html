@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOADEX - Sistema de Cargas Académicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            transition: all 0.3s ease;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        .hide { display: none !important; }
+        
+        .card-elegant {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #06b6d4 0%, #0369a1 100%);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .input-elegant {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f1f5f9;
+        }
+        
+        .input-elegant::placeholder {
+            color: rgba(226, 232, 240, 0.5);
+        }
+        
+        .input-elegant:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-clamp: 3;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="loginScreen" class="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-cyan-500/50">L</div>
+                </div>
+                <h1 class="text-white text-3xl font-bold">Loadex</h1>
+                <p class="text-slate-400 text-sm mt-2">Gestor de cargas académicas</p>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-8">
+                <h2 class="text-white text-2xl font-bold mb-2">Bienvenido</h2>
+                <p class="text-slate-400 text-sm mb-8">Inicia sesión para continuar</p>
+                
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <input type="email" id="loginEmail" placeholder="Correo electrónico" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <div class="mb-2">
+                        <input type="password" id="loginPassword" placeholder="Contraseña" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <a href="#" class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary w-full text-white font-semibold py-3 rounded-xl mb-6 transition">
+                        Entrar
+                    </button>
+                </form>
+                
+                <div class="text-center">
+                    <span class="text-slate-400 text-sm">¿No tienes cuenta? </span>
+                    <button onclick="showScreen('register')" class="text-cyan-400 hover:text-cyan-300 text-sm font-semibold">
+                        Regístrate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="registerScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-cyan-500/50">L</div>
+                </div>
+                <h1 class="text-white text-3xl font-bold">Loadex</h1>
+                <p class="text-slate-400 text-sm mt-2">Gestor de cargas académicas</p>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-8">
+                <h2 class="text-white text-2xl font-bold mb-2">Crear cuenta</h2>
+                <p class="text-slate-400 text-sm mb-8">Cargas Académicas</p>
+                
+                <form id="registerForm">
+                    <div class="mb-4">
+                        <input type="text" id="registerName" placeholder="Nombre completo" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input type="email" id="registerEmail" placeholder="Correo electrónico" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input type="password" id="registerPassword" placeholder="Crear contraseña" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <input type="password" id="registerConfirm" placeholder="Confirmar contraseña" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    
+                    <p class="text-slate-400 text-xs mb-6">
+                        Al registrarte aceptas los <span class="text-cyan-400">Términos y condiciones</span>
+                    </p>
+                    
+                    <button type="submit" class="btn-primary w-full text-white font-semibold py-3 rounded-xl mb-6 transition">
+                        Crear cuenta
+                    </button>
+                </form>
+                
+                <div class="text-center">
+                    <span class="text-slate-400 text-sm">¿Ya tienes cuenta? </span>
+                    <button onclick="showScreen('login')" class="text-cyan-400 hover:text-cyan-300 text-sm font-semibold">
+                        Inicia sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="homeScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="flex items-center justify-between mb-8 pt-4">
+                <div class="flex items-center gap-3">
+                    <div id="userAvatar" class="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-cyan-500/30"></div>
+                    <div>
+                        <p class="text-slate-400 text-sm">Bienvenido</p>
+                        <h1 class="text-white text-xl font-bold"><span id="userName"></span></h1>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-red-400 hover:text-red-300 font-medium transition">Salir</button>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-4 mb-6">
+                <div class="relative">
+                    <svg class="absolute left-4 top-3.5 text-slate-400" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Buscar asignatura o profesor..." onkeyup="filterCargas()"
+                        class="input-elegant w-full rounded-xl pl-12 pr-4 py-3 outline-none">
+                </div>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-6 mb-6">
+                <h2 class="text-white text-lg font-bold mb-4">Acciones rápidas</h2>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="showScreen('createCarga')" class="btn-primary text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19" stroke-width="2" stroke-linecap="round"></line>
+                            <line x1="5" y1="12" x2="19" y2="12" stroke-width="2" stroke-linecap="round"></line>
+                        </svg>
+                        <span>Nuevo</span>
+                    </button>
+                    <button onclick="showScreen('notes')" class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition">
+                        Notas
+                    </button>
+                    <button onclick="showScreen('horarios')" class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition">
+                        Horarios
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-6 mb-6">
+                <h2 class="text-white text-lg font-bold mb-4">Mis cargas académicas</h2>
+                <div id="cargasList"></div>
+            </div>
+        </div>
+    </div>
+    <div id="createCargaScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="card-elegant rounded-2xl p-6 -mx-4 -mt-4 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <button onclick="showScreen('home')" class="text-white hover:text-cyan-400 transition">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-white text-2xl font-bold">Nueva carga académica</h1>
+                </div>
+            </div>
+            
+            <form id="createCargaForm" class="space-y-4">
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Asignatura</label>
+                    <input type="text" id="nuevaAsignatura" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Profesor</label>
+                    <input type="text" id="nuevoProfesor" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Aula / Lugar</label>
+                    <input type="text" id="nuevaAula" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Día(s)</label>
+                    <input type="text" id="nuevosDias" placeholder="Ej: Lun, Mié, Vie" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="card-elegant rounded-2xl p-6">
+                        <label class="text-white font-semibold block mb-3">Hora inicio</label>
+                        <input type="time" id="nuevaHoraInicio" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    <div class="card-elegant rounded-2xl p-6">
+                        <label class="text-white font-semibold block mb-3">Hora fin</label>
+                        <input type="time" id="nuevaHoraFin" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Notas / Observaciones</label>
+                    <textarea id="nuevasNotas" rows="4"
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none resize-none"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <button type="button" onclick="showScreen('home')"
+                        class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary text-white font-semibold py-3 rounded-xl transition">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="viewCargaScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="card-elegant rounded-2xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <button onclick="showScreen('home')" class="text-white hover:text-cyan-400 transition">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-white text-2xl font-bold">Detalles de la carga</h1>
+                </div>
+            </div>
+            
+            <div class="card-elegant rounded-2xl p-6 mb-6 space-y-4">
+                <div>
+                    <p class="text-slate-400 text-sm mb-2">Asignatura</p>
+                    <p id="viewAsignatura" class="text-white text-lg font-semibold"></p>
+                </div>
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-slate-400 text-sm mb-2">Profesor</p>
+                    <p id="viewProfesor" class="text-white text-lg"></p>
+                </div>
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-slate-400 text-sm mb-2">Aula</p>
+                    <p id="viewAula" class="text-white text-lg"></p>
+                </div>
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-slate-400 text-sm mb-2">Día(s)</p>
+                    <p id="viewDias" class="text-white text-lg"></p>
+                </div>
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-slate-400 text-sm mb-2">Horario</p>
+                    <div class="flex items-center gap-2 text-white text-lg">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                            <polyline points="12 6 12 12 16 14" stroke-width="2" stroke-linecap="round"></polyline>
+                        </svg>
+                        <span id="viewHorario"></span>
+                    </div>
+                </div>
+                
+                <div class="border-t border-white/10 pt-4">
+                    <p class="text-slate-400 text-sm mb-3">Notas</p>
+                    <div class="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px]">
+                        <p id="viewNotas" class="text-slate-300 text-sm"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="showEditCarga()"
+                    class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Editar
+                </button>
+                <button onclick="deleteCarga()"
+                    class="bg-red-600/80 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="editCargaScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="card-elegant rounded-2xl p-6 -mx-4 -mt-4 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <button onclick="showScreen('viewCarga')" class="text-white hover:text-cyan-400 transition">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-white text-2xl font-bold">Editar carga académica</h1>
+                </div>
+            </div>
+            
+            <form id="editCargaForm" class="space-y-4">
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Asignatura</label>
+                    <input type="text" id="editAsignatura" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Profesor</label>
+                    <input type="text" id="editProfesor" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Aula / Lugar</label>
+                    <input type="text" id="editAula" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Día(s)</label>
+                    <input type="text" id="editDias" placeholder="Ej: Lun, Mié, Vie" required
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="card-elegant rounded-2xl p-6">
+                        <label class="text-white font-semibold block mb-3">Hora inicio</label>
+                        <input type="time" id="editHoraInicio" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                    <div class="card-elegant rounded-2xl p-6">
+                        <label class="text-white font-semibold block mb-3">Hora fin</label>
+                        <input type="time" id="editHoraFin" required
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none">
+                    </div>
+                </div>
+                
+                <div class="card-elegant rounded-2xl p-6">
+                    <label class="text-white font-semibold block mb-3">Notas / Observaciones</label>
+                    <textarea id="editNotas" rows="4"
+                        class="input-elegant w-full rounded-xl px-4 py-3 outline-none resize-none"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <button type="button" onclick="showScreen('viewCarga')"
+                        class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary text-white font-semibold py-3 rounded-xl transition">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="horariosScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-3xl mx-auto">
+            <div class="card-elegant rounded-2xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <button onclick="showScreen('home')" class="text-white hover:text-cyan-400 transition">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-white text-2xl font-bold">Horarios</h1>
+                </div>
+            </div>
+            
+            <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+                <button onclick="selectDay('Lun')" class="day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold btn-primary text-white shadow-lg shadow-cyan-500/30">Lun</button>
+                <button onclick="selectDay('Mar')" class="day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold bg-white/10 hover:bg-white/20 text-white">Mar</button>
+                <button onclick="selectDay('Mié')" class="day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold bg-white/10 hover:bg-white/20 text-white">Mié</button>
+                <button onclick="selectDay('Jue')" class="day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold bg-white/10 hover:bg-white/20 text-white">Jue</button>
+                <button onclick="selectDay('Vie')" class="day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold bg-white/10 hover:bg-white/20 text-white">Vie</button>
+            </div>
+            
+            <div id="horariosList"></div>
+        </div>
+    </div>
+    <div id="notesScreen" class="hide min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <button onclick="showScreen('home')" class="text-white hover:text-cyan-400 transition">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="m15 18-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-white text-2xl font-bold">Notas</h1>
+                </div>
+                <button onclick="addNewNote()" class="btn-primary text-white font-semibold py-2 px-4 rounded-xl transition flex items-center gap-2">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <line x1="12" y1="5" x2="12" y2="19" stroke-width="2" stroke-linecap="round"></line>
+                        <line x1="5" y1="12" x2="19" y2="12" stroke-width="2" stroke-linecap="round"></line>
+                    </svg>
+                    Nueva nota
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="notesList">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('loadex_users') || '[]');
+        let cargasAcademicas = JSON.parse(localStorage.getItem('loadex_cargas') || '[]');
+        let horarios = JSON.parse(localStorage.getItem('loadex_horarios') || '[]');
+        let notes = JSON.parse(localStorage.getItem('loadex_notes') || '[]');
+        let currentCargaId = null;
+        let selectedDay = 'Lun';
+        let currentNoteId = null;
+
+        function showScreen(screen) {
+            const screens = ['loginScreen', 'registerScreen', 'homeScreen', 'createCargaScreen', 
+                            'viewCargaScreen', 'editCargaScreen', 'horariosScreen', 'notesScreen'];
+            
+            screens.forEach(s => {
+                document.getElementById(s).classList.add('hide');
+            });
+            
+            document.getElementById(screen + 'Screen').classList.remove('hide');
+            
+            if (screen === 'home') {
+                loadHome();
+            } else if (screen === 'horarios') {
+                loadHorarios();
+            } else if (screen === 'notes') {
+                loadNotes();
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                showScreen('home');
+                document.getElementById('loginForm').reset();
+            } else {
+                alert('Correo o contraseña incorrectos');
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            
+            if (password !== confirm) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (users.find(u => u.email === email)) {
+                alert('Este correo ya está registrado');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                fullName: name,
+                email: email,
+                password: password
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('loadex_users', JSON.stringify(users));
+            
+            alert('Cuenta creada exitosamente');
+            document.getElementById('registerForm').reset();
+            showScreen('login');
+        });
+
+        function logout() {
+            currentUser = null;
+            showScreen('login');
+        }
+
+        function loadHome() {
+            if (!currentUser) return;
+            
+            document.getElementById('userName').textContent = currentUser.fullName.split(' ')[0];
+            document.getElementById('userAvatar').textContent = currentUser.fullName.charAt(0).toUpperCase();
+            
+            renderCargas();
+        }
+
+        function renderCargas(filter = '') {
+            const container = document.getElementById('cargasList');
+            const userCargas = cargasAcademicas.filter(c => c.userId === currentUser.id);
+            
+            let filteredCargas = userCargas;
+            if (filter) {
+                filteredCargas = userCargas.filter(c => 
+                    c.asignatura.toLowerCase().includes(filter.toLowerCase()) ||
+                    c.profesor.toLowerCase().includes(filter.toLowerCase())
+                );
+            }
+            
+            if (filteredCargas.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-slate-400 mb-4">No tienes cargas académicas aún</p>
+                        <button onclick="showScreen('createCarga')" class="btn-primary text-white px-6 py-2 rounded-xl transition">
+                            Crear primera carga
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<div class="space-y-3">' + 
+                    filteredCargas.map((carga, index) => {
+                        const timeSince = getTimeSince(carga.fechaCreacion);
+                        
+                        return `
+                            <button onclick="viewCarga(${carga.id})" class="card-elegant w-full rounded-xl p-4 hover:bg-white/15 transition text-left">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h3 class="text-white font-semibold text-lg mb-1">${carga.asignatura}</h3>
+                                        <p class="text-slate-400 text-sm">${carga.profesor}</p>
+                                        <p class="text-slate-500 text-xs mt-2">${timeSince}</p>
+                                    </div>
+                                    <div class="w-2 h-2 bg-cyan-400 rounded-full mt-1"></div>
+                                </div>
+                            </button>
+                        `;
+                    }).join('') + '</div>';
+            }
+        }
+
+        function filterCargas() {
+            const searchTerm = document.getElementById('searchInput').value;
+            renderCargas(searchTerm);
+        }
+
+        function getTimeSince(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const hours = Math.floor((now - date) / (1000 * 60 * 60));
+            if (hours < 1) return 'Hace menos de 1h';
+            return `Última actualización • ${hours}h`;
+        }
+
+        document.getElementById('createCargaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const carga = {
+                id: Date.now(),
+                userId: currentUser.id,
+                asignatura: document.getElementById('nuevaAsignatura').value,
+                profesor: document.getElementById('nuevoProfesor').value,
+                aula: document.getElementById('nuevaAula').value,
+                dias: document.getElementById('nuevosDias').value,
+                horaInicio: document.getElementById('nuevaHoraInicio').value,
+                horaFin: document.getElementById('nuevaHoraFin').value,
+                notas: document.getElementById('nuevasNotas').value,
+                fechaCreacion: new Date().toISOString()
+            };
+            
+            cargasAcademicas.push(carga);
+            localStorage.setItem('loadex_cargas', JSON.stringify(cargasAcademicas));
+
+            const diasArray = carga.dias.split(',').map(d => d.trim());
+            diasArray.forEach(dia => {
+                const horario = {
+                    id: Date.now() + Math.random(),
+                    userId: currentUser.id,
+                    cargaId: carga.id,
+                    dia: dia,
+                    horaInicio: carga.horaInicio,
+                    horaFin: carga.horaFin,
+                    asignatura: carga.asignatura,
+                    aula: carga.aula
+                };
+                horarios.push(horario);
+            });
+            
+            localStorage.setItem('loadex_horarios', JSON.stringify(horarios));
+            
+            document.getElementById('createCargaForm').reset();
+            alert('Carga académica creada exitosamente');
+            showScreen('home');
+        });
+
+        function viewCarga(id) {
+            currentCargaId = id;
+            const carga = cargasAcademicas.find(c => c.id === id);
+            
+            if (!carga) return;
+            
+            document.getElementById('viewAsignatura').textContent = carga.asignatura;
+            document.getElementById('viewProfesor').textContent = carga.profesor;
+            document.getElementById('viewAula').textContent = carga.aula;
+            document.getElementById('viewDias').textContent = carga.dias;
+            document.getElementById('viewHorario').textContent = `${carga.horaInicio} - ${carga.horaFin}`;
+            document.getElementById('viewNotas').textContent = carga.notas || 'Sin notas';
+            
+            showScreen('viewCarga');
+        }
+
+        function showEditCarga() {
+            const carga = cargasAcademicas.find(c => c.id === currentCargaId);
+            
+            if (!carga) return;
+            
+            document.getElementById('editAsignatura').value = carga.asignatura;
+            document.getElementById('editProfesor').value = carga.profesor;
+            document.getElementById('editAula').value = carga.aula;
+            document.getElementById('editDias').value = carga.dias;
+            document.getElementById('editHoraInicio').value = carga.horaInicio;
+            document.getElementById('editHoraFin').value = carga.horaFin;
+            document.getElementById('editNotas').value = carga.notas;
+            
+            showScreen('editCarga');
+        }
+
+        document.getElementById('editCargaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const index = cargasAcademicas.findIndex(c => c.id === currentCargaId);
+            
+            if (index !== -1) {
+                cargasAcademicas[index] = {
+                    ...cargasAcademicas[index],
+                    asignatura: document.getElementById('editAsignatura').value,
+                    profesor: document.getElementById('editProfesor').value,
+                    aula: document.getElementById('editAula').value,
+                    dias: document.getElementById('editDias').value,
+                    horaInicio: document.getElementById('editHoraInicio').value,
+                    horaFin: document.getElementById('editHoraFin').value,
+                    notas: document.getElementById('editNotas').value
+                };
+                
+                localStorage.setItem('loadex_cargas', JSON.stringify(cargasAcademicas));
+
+            horarios = horarios.filter(h => h.cargaId !== currentCargaId);
+                
+                const diasArray = cargasAcademicas[index].dias.split(',').map(d => d.trim());
+                diasArray.forEach(dia => {
+                    const horario = {
+                        id: Date.now() + Math.random(),
+                        userId: currentUser.id,
+                        cargaId: currentCargaId,
+                        dia: dia,
+                        horaInicio: cargasAcademicas[index].horaInicio,
+                        horaFin: cargasAcademicas[index].horaFin,
+                        asignatura: cargasAcademicas[index].asignatura,
+                        aula: cargasAcademicas[index].aula
+                    };
+                    horarios.push(horario);
+                });
+                
+                localStorage.setItem('loadex_horarios', JSON.stringify(horarios));
+                
+                alert('Carga académica actualizada');
+                viewCarga(currentCargaId);
+            }
+        });
+
+        function deleteCarga() {
+            if (confirm('¿Estás seguro de eliminar esta carga académica?')) {
+                cargasAcademicas = cargasAcademicas.filter(c => c.id !== currentCargaId);
+                horarios = horarios.filter(h => h.cargaId !== currentCargaId);
+                
+                localStorage.setItem('loadex_cargas', JSON.stringify(cargasAcademicas));
+                localStorage.setItem('loadex_horarios', JSON.stringify(horarios));
+                
+                alert('Carga académica eliminada');
+                showScreen('home');
+            }
+        }
+
+        function loadHorarios() {
+            selectedDay = 'Lun';
+            renderHorarios();
+        }
+
+        function selectDay(day) {
+            selectedDay = day;
+            
+            // Actualizar botones
+            const buttons = document.querySelectorAll('.day-btn');
+            buttons.forEach(btn => {
+                btn.className = 'day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold bg-white/10 hover:bg-white/20 text-white';
+            });
+            
+            event.target.className = 'day-btn px-6 py-2 rounded-xl whitespace-nowrap transition font-semibold btn-primary text-white shadow-lg shadow-cyan-500/30';
+            
+            renderHorarios();
+        }
+
+        function renderHorarios() {
+            const container = document.getElementById('horariosList');
+            const userHorarios = horarios
+                .filter(h => h.userId === currentUser.id && h.dia === selectedDay)
+                .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+            
+            if (userHorarios.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="mx-auto mb-4 text-slate-500" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke-width="2" stroke-linecap="round"></line>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke-width="2" stroke-linecap="round"></line>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke-width="2"></line>
+                        </svg>
+                        <p class="text-slate-400 mb-4">No hay clases programadas para ${selectedDay}</p>
+                        <button onclick="showScreen('createCarga')" class="text-cyan-400 hover:text-cyan-300 font-semibold">
+                            Agregar nueva carga
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<div class="space-y-4">' +
+                    userHorarios.map(horario => `
+                        <div class="card-elegant rounded-xl p-5 hover:bg-white/15 transition">
+                            <div class="flex items-start justify-between mb-3">
+                                <h3 class="text-lg font-semibold text-white">${horario.asignatura}</h3>
+                                <div class="flex items-center text-cyan-400 text-sm font-medium gap-1">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                                        <polyline points="12 6 12 12 16 14" stroke-width="2" stroke-linecap="round"></polyline>
+                                    </svg>
+                                    ${horario.horaInicio} - ${horario.horaFin}
+                                </div>
+                            </div>
+                            <div class="flex items-center text-slate-400 text-sm gap-2">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke-width="2"></path>
+                                    <circle cx="12" cy="10" r="3" stroke-width="2"></circle>
+                                </svg>
+                                ${horario.aula}
+                            </div>
+                        </div>
+                    `).join('') + '</div>';
+            }
+        }
+
+        // Load Notes
+        function loadNotes() {
+            renderNotes();
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notesList');
+            const userNotes = notes.filter(n => n.userId === currentUser.id);
+
+            if (userNotes.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <svg class="mx-auto mb-4 text-slate-500" width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <p class="text-slate-400 mb-4">No tienes notas creadas aún</p>
+                        <button onclick="addNewNote()" class="btn-primary text-white px-6 py-2 rounded-xl transition">
+                            Crear primera nota
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = userNotes
+                    .sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion))
+                    .map(note => {
+                        const date = new Date(note.fechaCreacion);
+                        const formattedDate = date.toLocaleDateString('es-ES', { 
+                            day: 'numeric', 
+                            month: 'short', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                        const preview = note.contenido.substring(0, 100);
+                        
+                        return `
+                            <div onclick="editNote(${note.id})" class="card-elegant rounded-xl p-5 cursor-pointer hover:bg-white/15 transition h-40 flex flex-col">
+                                <h3 class="text-white font-semibold text-sm mb-2 truncate">${note.titulo || 'Sin título'}</h3>
+                                <p class="text-slate-300 text-xs flex-1 line-clamp-3 mb-3">${preview}${preview.length === 100 ? '...' : ''}</p>
+                                <p class="text-slate-500 text-xs">${formattedDate}</p>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        }
+
+        function addNewNote() {
+            currentNoteId = null;
+            showNoteEditor('', '');
+        }
+
+        function editNote(id) {
+            currentNoteId = id;
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                showNoteEditor(note.titulo, note.contenido);
+            }
+        }
+
+        function showNoteEditor(titulo = '', contenido = '') {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="card-elegant rounded-2xl w-full max-w-2xl max-h-screen overflow-y-auto">
+                    <div class="flex items-center justify-between p-6 border-b border-white/10">
+                        <h2 class="text-white text-xl font-bold">${currentNoteId ? 'Editar nota' : 'Nueva nota'}</h2>
+                        <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white transition">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18" stroke-width="2" stroke-linecap="round"></line>
+                                <line x1="6" y1="6" x2="18" y2="18" stroke-width="2" stroke-linecap="round"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <input type="text" id="noteTitle" placeholder="Título" value="${titulo}"
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none text-white font-semibold">
+                        <textarea id="noteContent" placeholder="Escribe tu nota aquí..." rows="10"
+                            class="input-elegant w-full rounded-xl px-4 py-3 outline-none resize-none">${contenido}</textarea>
+                        <div class="flex gap-3 justify-end">
+                            <button onclick="this.closest('.fixed').remove()" 
+                                class="bg-white/10 hover:bg-white/20 text-white font-semibold py-2 px-6 rounded-xl transition">
+                                Cancelar
+                            </button>
+                            <button onclick="saveNote()" 
+                                class="btn-primary text-white font-semibold py-2 px-6 rounded-xl transition">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function saveNote() {
+            const titulo = document.getElementById('noteTitle').value.trim();
+            const contenido = document.getElementById('noteContent').value.trim();
+
+            if (!contenido) {
+                alert('La nota no puede estar vacía');
+                return;
+            }
+
+            if (currentNoteId) {
+                // Editar nota existente
+                const index = notes.findIndex(n => n.id === currentNoteId);
+                if (index !== -1) {
+                    notes[index] = {
+                        ...notes[index],
+                        titulo: titulo || 'Sin título',
+                        contenido: contenido,
+                        fechaModificacion: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Crear nueva nota
+                const newNote = {
+                    id: Date.now(),
+                    userId: currentUser.id,
+                    titulo: titulo || 'Sin título',
+                    contenido: contenido,
+                    fechaCreacion: new Date().toISOString(),
+                    fechaModificacion: new Date().toISOString()
+                };
+                notes.push(newNote);
+            }
+
+            localStorage.setItem('loadex_notes', JSON.stringify(notes));
+            document.querySelector('.fixed').remove();
+            loadNotes();
+        }
+
+        function deleteNote(id) {
+            if (confirm('¿Eliminar esta nota?')) {
+                notes = notes.filter(n => n.id !== id);
+                localStorage.setItem('loadex_notes', JSON.stringify(notes));
+                document.querySelector('.fixed').remove();
+                loadNotes();
+            }
+        }
+    </script>
+</body>
+</html>
